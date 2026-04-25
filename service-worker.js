@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mele-tracker-v3.0';
+const CACHE_NAME = 'study-tracker';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
