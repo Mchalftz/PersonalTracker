@@ -1,0 +1,124 @@
+================================================================================
+             MEL'S MELE TRACKER 2026 - QUICK START GUIDE
+================================================================================
+
+WHAT IS THIS?
+• Study progress tracker for Philippine Mechanical Engineers Licensure Exam
+• Auto-saves all progress locally (never lost)
+• Works offline - perfect for studying anywhere
+• Installable as Android app
+
+================================================================================
+HOW TO USE
+================================================================================
+
+1. MARK PROGRESS
+   • Check box (✓) = Topic completed
+   • Enter % (0-100) = Personal study progress
+   • Both track separately
+
+2. VIEW DASHBOARD (Left side)
+   • Overall Mastery = Combined progress percentage
+   • Days Until Exam = Countdown to August 15, 2026
+   • Focus Needed = Topics you need to work on
+
+3. ORGANIZE TOPICS
+   • Click Major Title to expand/collapse all subtopics
+   • Click Subtopic to show/hide items
+   • Select All checkbox = Mark entire subfolder at once
+
+4. TAKE NOTES
+   • Click "Notes" button per topic
+   • Save study notes, formulas, key points
+   • Auto-saves with timestamps
+
+================================================================================
+FEATURES & LEGENDS
+================================================================================
+
+📊 OVERALL MASTERY GAUGE
+   • Shows total completion %
+   • Color gradient: Red (0%) → Orange → Yellow → Green (100%)
+   • Based on checked items only
+
+📈 SECTION PROGRESS BADGES
+   • One badge per major: Math / Power / Machine
+   • Same color gradient as overall mastery
+   • Updates in real-time
+
+⚠️ FOCUS NEEDED
+   • Lists topics with 1-50% personal progress
+   • Red circle 🔴 = Not yet completed
+   • Green circle 🟢 = Completed but in study range
+   • Click to jump to topic
+
+📅 DAYS BEFORE EXAM
+   • Auto-counts down to August 15, 2026
+   • Updates daily
+
+💬 INSPIRATIONAL QUOTES
+   • Random motivational quote each load
+   • Encouragement for exam prep
+
+📝 NOTES FEATURE
+   • Per-topic note storage
+   • Yellow highlight = Has recent notes
+   • Grey = Notes older than 72 hours
+
+🔐 DATA STORAGE
+   • All data saved locally on your device
+   • Never sent to servers
+   • Persists across page refreshes
+   • Works offline completely
+
+================================================================================
+UI ELEMENTS EXPLAINED
+================================================================================
+
+COLOR CODES:
+   🟤 Brown = Engineering Mathematics
+   🟢 Green = Power Plant Engineering
+   🔴 Red = Machine Design
+
+PROGRESS INDICATORS:
+   ✓ Checkbox = Topic completed
+   % Input = Personal study percentage (0-100)
+   Gauge Bar = Visual progress (color-coded)
+
+ICONS:
+   📌 = Topic item indicator
+   📝 = Notes button
+   🔴 = Focus needed (unchecked item)
+   🟢 = Focus needed (checked item)
+   💾 = Save button
+   📂 = Expand all
+   📁 = Collapse all
+
+================================================================================
+QUICK TIPS
+================================================================================
+
+✓ Set percentage 1-50% to appear in "Focus Needed"
+✓ Check items when topic is mastered
+✓ Notes auto-save - no need to manually save
+✓ Refresh page - all progress returns (auto-saved)
+✓ Use on phone, tablet, or computer
+✓ Internet not required after first load
+✓ Install as Android app for home screen access
+
+================================================================================
+GETTING STARTED
+================================================================================
+
+1. Open the app in your browser
+2. Check topics as you complete them
+3. Enter % for personal progress tracking
+4. Review "Focus Needed" for weak areas
+5. Take notes per topic
+6. Refresh anytime - progress is safe
+
+All progress automatically saved! 💾
+
+================================================================================
+                        Good luck with exam prep! 📚💪
+================================================================================

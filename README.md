@@ -1,4 +1,4 @@
-# 📚 Personal Study Tracker
+# 📚 Generic Study Tracker
 
 A **free, customizable study tracker** for any course, subject, or exam. Perfect for students preparing for languages, certifications, tests, or any learning goal.
 
