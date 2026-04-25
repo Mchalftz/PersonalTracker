@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Study Tracker - Customizable</title>
+<meta name="theme-color" content="#06d6a0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="manifest" href="./manifest.json">
+<style>
+    :root {
+        --primary: #06d6a0;
+        --bg-gradient: linear-gradient(135deg,#fff,#ffe4ec,#e6e6fa);
+    }
+
+    body {
+        font-family: 'Segoe UI', Tahoma, sans-serif;
+        margin: 0;
+        display: flex;
+        height: 100vh;
+        overflow: hidden;
+        background: var(--bg-gradient);
+    }
+
+    .setup-screen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: var(--bg-gradient);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        padding: 20px;
+    }
+
+    .setup-container {
+        background: white;
+        padding: 40px;
+        border-radius: 15px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        max-width: 500px;
+        width: 100%;
+    }
+
+    .setup-container h1 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 30px;
+    }
+
+    .setup-container input,
+    .setup-container textarea {
+        width: 100%;
+        padding: 12px;
+        margin-bottom: 15px;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        font-size: 1em;
+        box-sizing: border-box;
+        font-family: 'Segoe UI', Tahoma, sans-serif;
+    }
+
+    .setup-container input:focus,
+    .setup-container textarea:focus {
+        outline: none;
+        border-color: var(--primary);
+    }
+
+    .setup-container label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: #333;
+    }
+
+    .setup-container button {
+        width: 100%;
+        padding: 14px;
+        background: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 1em;
+        font-weight: bold;
+        cursor: pointer;
+        margin-top: 20px;
+    }
+
+    .setup-container button:hover {
+        opacity: 0.9;
+    }
+
+    .topic-input-group {
+        background: #f9f9f9;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+    }
+
+    .topic-input-group label {
+        margin-bottom: 8px;
+    }
+
+    .topic-input-group input {
+        margin-bottom: 10px;
+    }
+
+    .topic-input-group textarea {
+        min-height: 100px;
+        resize: vertical;
+    }
+
+    .add-topic-btn {
+        width: 100%;
+        padding: 10px;
+        background: #f0f0f0;
+        border: 2px dashed #ddd;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        color: #666;
+        margin-bottom: 15px;
+    }
+
+    .add-topic-btn:hover {
+        background: #e8e8e8;
+    }
+
+    .topic-list {
+        max-height: 200px;
+        overflow-y: auto;
+        margin-bottom: 15px;
+        padding: 10px;
+        background: #f9f9f9;
+        border-radius: 8px;
+    }
+
+    .topic-item {
+        padding: 10px;
+        background: white;
+        margin-bottom: 8px;
+        border-radius: 6px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .topic-item button {
+        width: auto;
+        padding: 5px 10px;
+        background: #ff4757;
+        font-size: 0.8em;
+        margin: 0;
+    }
+
+    .dashboard {
+        width: 320px;
+        padding: 15px;
+        border-right: 1px solid #ddd;
+        overflow-y: auto;
+        background: #fafafa;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .main {
+        flex: 1;
+        padding: 20px;
+        overflow-y: auto;
+        height: 100vh;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .dashboard-section {
+        background: white;
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 15px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+
+    .gauge {
+        width: 100%;
+        height: 30px;
+        border-radius: 15px;
+        overflow: hidden;
+        border: 2px solid #ddd;
+        margin: 10px 0;
+    }
+
+    .gauge-fill {
+        height: 100%;
+        transition: width 0.5s ease, background 0.5s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        font-size: 0.85em;
+    }
+
+    .quote-box {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 15px;
+        border-radius: 10px;
+        font-style: italic;
+        font-size: 0.9em;
+        line-height: 1.6;
+        margin-bottom: 15px;
+        text-align: center;
+    }
+
+    .focus-needed-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .focus-item {
+        background: #fff3cd;
+        border-left: 4px solid #ff6b6b;
+        padding: 10px;
+        margin-bottom: 8px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.85em;
+        transition: all 0.3s;
+    }
+
+    .focus-item:hover {
+        background: #fff8dc;
+        transform: translateX(3px);
+    }
+
+    .subject-card {
+        margin-bottom: 20px;
+        border-radius: 12px;
+        padding: 0;
+        background: white;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .subject-header {
+        padding: 15px;
+        cursor: pointer;
+        font-size: 1.2em;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #f0f0f0;
+        user-select: none;
+    }
+
+    .subject-header:hover {
+        background: #f9f9f9;
+    }
+
+    .topic-name {
+        flex: 1;
+    }
+
+    .section-progress {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 70px;
+        height: 35px;
+        border-radius: 25px;
+        font-size: 0.9em;
+        font-weight: 700;
+        color: white;
+        text-align: center;
+        min-width: 70px;
+        transition: all 0.5s ease;
+        background: linear-gradient(90deg, #ff4757, #ffa502);
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .item {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        padding: 15px;
+        border-bottom: 1px solid #f9f9f9;
+    }
+
+    @media (min-width: 600px) {
+        .item { flex-direction: row; justify-content: space-between; align-items: center; }
+    }
+
+    .item-name {
+        flex: 1;
+    }
+
+    .controls {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        justify-content: flex-end;
+    }
+
+    .item-percentage {
+        width: 70px;
+        border-radius: 8px;
+        text-align: center;
+        border: 1px solid #ccc;
+        padding: 8px;
+        font-weight: bold;
+        font-size: 1em;
+    }
+
+    .notes-btn {
+        padding: 8px 16px;
+        cursor: pointer;
+        border: 1px solid #999;
+        border-radius: 8px;
+        background: white;
+        font-weight: 500;
+    }
+
+    .notes-btn.has-notes {
+        background: #ffd700;
+        border-color: #daa520;
+    }
+
+    .notes-panel {
+        width: 450px;
+        position: fixed;
+        right: -450px;
+        top: 0;
+        height: 100vh;
+        background: white;
+        transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex;
+        flex-direction: column;
+        box-shadow: -5px 0 25px rgba(0,0,0,0.15);
+        z-index: 2000;
+    }
+
+    .notes-panel.open { right: 0; }
+
+    textarea {
+        flex: 1;
+        padding: 20px;
+        font-size: 16px;
+        border: none;
+        outline: none;
+        resize: none;
+        background: #fffef0;
+        line-height: 1.6;
+    }
+
+    .overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        z-index: 900;
+    }
+
+    .overlay.active { display: block; }
+
+    @media (max-width: 850px) {
+        .dashboard {
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100%;
+            transform: translateX(-100%);
+            box-shadow: 5px 0 15px rgba(0,0,0,0.1);
+            width: 100%;
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+        .dashboard.open {
+            transform: translateX(0);
+        }
+        .main {
+            padding: 70px 15px 20px 15px;
+        }
+        .notes-panel {
+            width: 100% !important;
+            right: -100% !important;
+        }
+        .notes-panel.open {
+            right: 0 !important;
+        }
+    }
+
+    .menu-btn {
+        display: none;
+        position: fixed;
+        top: 15px;
+        left: 15px;
+        z-index: 1100;
+        background: #fff;
+        border: 2px solid var(--primary);
+        border-radius: 8px;
+        padding: 10px 15px;
+        font-weight: bold;
+        cursor: pointer;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    @media (max-width: 850px) {
+        .menu-btn { display: block; }
+    }
+
+    .reset-btn {
+        padding: 8px 12px;
+        background: #ff4757;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.85em;
+        margin-top: 10px;
+        width: 100%;
+    }
+
+    .reset-btn:hover {
+        opacity: 0.9;
+    }
+</style>
+</head>
+<body>
+
+<div class="setup-screen" id="setupScreen">
+    <div class="setup-container">
+        <h1>📚 Create Your Study Tracker</h1>
+
+        <label>Course/Subject Name</label>
+        <input type="text" id="courseName" placeholder="e.g., English Literature, Biology, Spanish">
+
+        <label>Exam/Deadline Date</label>
+        <input type="date" id="examDate">
+
+        <div class="topic-input-group">
+            <label>Study Topics (Add one at a time)</label>
+            <input type="text" id="topicName" placeholder="e.g., Vocabulary, Grammar, Literature Analysis">
+            <textarea id="topicItems" placeholder="Enter subtopics (one per line)&#10;Example:&#10;Basic Tenses&#10;Past Continuous&#10;Future Perfect"></textarea>
+            <button class="add-topic-btn" onclick="addTopic()">+ Add Topic</button>
+        </div>
+
+        <div class="topic-list" id="topicList"></div>
+
+        <button onclick="startTracker()">Start Tracking →</button>
+    </div>
+</div>
+
+<button class="menu-btn" onclick="toggleDashboard()">📊 Menu</button>
+<div class="overlay" id="overlay" onclick="closeAllPanels()"></div>
+
+<div class="dashboard" id="dashboard">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+        <h3 style="margin: 0; border: none; padding: 0;">📊 Dashboard</h3>
+        <button onclick="toggleDashboard()" style="border:none; background:none; font-size:1.5em; cursor:pointer; display:none;" class="mobile-only">✕</button>
+    </div>
+
+    <div class="quote-box" id="quoteBox"></div>
+
+    <div class="dashboard-section">
+        <div style="font-weight: bold; margin-bottom: 10px;">🎯 Overall Progress</div>
+        <div style="text-align: center; margin-bottom: 10px;">
+            <span id="masteryPercent" style="font-size: 1.8em; font-weight: bold; color: #333;">0%</span>
+        </div>
+        <div class="gauge">
+            <div class="gauge-fill" id="masteryGauge" style="width: 0%; background: linear-gradient(90deg, #ff4757, #ffa502);"></div>
+        </div>
+    </div>
+
+    <div class="dashboard-section">
+        <div style="font-weight: bold; margin-bottom: 10px;">📅 Days Remaining</div>
+        <div style="text-align: center; font-size: 1.5em; font-weight: bold;" id="daysRemaining">-</div>
+    </div>
+
+    <div class="dashboard-section">
+        <div style="font-weight: bold; margin-bottom: 10px;">⚠️ Areas to Focus</div>
+        <ul id="weakList" class="focus-needed-list"></ul>
+        <div id="focusEmpty" style="text-align: center; color: #999; font-size: 0.9em; padding: 10px;">All on track!</div>
+    </div>
+
+    <div style="margin-top: auto; padding-bottom: 20px;">
+        <button class="reset-btn" onclick="resetTracker()">⚙️ Reset Tracker</button>
+    </div>
+</div>
+
+<div class="main">
+    <h1 id="pageTitle" style="font-size: 1.6em; margin-bottom: 5px;">Study Tracker</h1>
+    <p id="pageSubtitle" style="color: #666; margin-bottom: 25px;"></p>
+    <div id="content"></div>
+</div>
+
+<div class="notes-panel" id="notesPanel">
+    <div style="padding: 20px; background: #f4f4f4; border-bottom: 1px solid #ddd; display: flex; justify-content: space-between; align-items: center;">
+        <strong id="noteTitleShort">Notes</strong>
+        <button onclick="closeNotes()" style="border:none; background:none; font-size:1.5em; cursor:pointer;">✕</button>
+    </div>
+    <div id="noteTitleFull" style="padding: 10px 20px; font-size: 0.75em; color: #888; background: #fff; border-bottom: 1px solid #eee;"></div>
+    <textarea id="noteText" placeholder="Add your study notes, formulas, or key points..."></textarea>
+    <button onclick="saveNote()" style="padding: 20px; background: var(--primary); color: white; border: none; font-weight: bold; font-size: 1.1em; cursor: pointer;">💾 Save Note</button>
+</div>
+
+<script>
+    // Quotes for motivation
+    const quotes = [
+        "The expert in anything was once a beginner. - Helen Hayes",
+        "Success is not final, failure is not fatal. - Winston Churchill",
+        "Your limitation—it's only your imagination.",
+        "Great things never came from comfort zones.",
+        "The only way to do great work is to love what you do. - Steve Jobs",
+        "Education is the most powerful weapon. - Nelson Mandela",
+        "Believe you can and you're halfway there. - Theodore Roosevelt",
+        "Knowledge is power. - Francis Bacon",
+        "The future belongs to those who believe in the beauty of their dreams. - Eleanor Roosevelt",
+        "You are never too old to set another goal or to dream a new dream. - C.S. Lewis"
+    ];
+
+    let userTopics = [];
+    let noteData = JSON.parse(localStorage.getItem('noteData')) || {};
+    let expandStateMemory = {};
+    let currentNoteId = null;
+
+    function getRandomQuote() {
+        return quotes[Math.floor(Math.random() * quotes.length)];
+    }
+
+    function addTopic() {
+        const name = document.getElementById('topicName').value.trim();
+        const items = document.getElementById('topicItems').value.trim();
+
+        if (!name || !items) {
+            alert('Please fill in both fields');
+            return;
+        }
+
+        const itemArray = items.split('\n').filter(item => item.trim());
+        
+        userTopics.push({
+            title: name,
+            items: itemArray
+        });
+
+        // Update UI
+        displayTopics();
+        document.getElementById('topicName').value = '';
+        document.getElementById('topicItems').value = '';
+    }
+
+    function removeTopic(index) {
+        userTopics.splice(index, 1);
+        displayTopics();
+    }
+
+    function displayTopics() {
+        const list = document.getElementById('topicList');
+        list.innerHTML = userTopics.map((topic, i) => `
+            <div class="topic-item">
+                <div>
+                    <strong>${topic.title}</strong>
+                    <div style="font-size: 0.8em; color: #999;">${topic.items.length} subtopics</div>
+                </div>
+                <button onclick="removeTopic(${i})">Remove</button>
+            </div>
+        `).join('');
+    }
+
+    function startTracker() {
+        const courseName = document.getElementById('courseName').value.trim();
+        const examDate = document.getElementById('examDate').value;
+
+        if (!courseName || !examDate || userTopics.length === 0) {
+            alert('Please fill all fields and add at least one topic');
+            return;
+        }
+
+        localStorage.setItem('courseName', courseName);
+        localStorage.setItem('examDate', examDate);
+        localStorage.setItem('userTopics', JSON.stringify(userTopics));
+
+        document.getElementById('setupScreen').style.display = 'none';
+        initializeTracker();
+    }
+
+    function initializeTracker() {
+        const courseName = localStorage.getItem('courseName') || 'Study Tracker';
+        document.getElementById('pageTitle').textContent = courseName;
+
+        const examDate = new Date(localStorage.getItem('examDate'));
+        const today = new Date();
+        const daysLeft = Math.ceil((examDate - today) / (1000 * 60 * 60 * 24));
+        document.getElementById('pageSubtitle').textContent = `Target: ${examDate.toDateString()} (${daysLeft} days left)`;
+        document.getElementById('daysRemaining').textContent = `${daysLeft} days`;
+
+        renderContent();
+        restoreState();
+        setupAutoSave();
+        document.getElementById('quoteBox').textContent = `"${getRandomQuote()}"`;
+    }
+
+    function renderContent() {
+        const content = document.getElementById('content');
+        content.innerHTML = '';
+        userTopics = JSON.parse(localStorage.getItem('userTopics')) || [];
+
+        userTopics.forEach((topic, topicIndex) => {
+            const topicDiv = document.createElement('div');
+            topicDiv.className = 'subject-card';
+            topicDiv.id = `topic-${topicIndex}`;
+
+            const header = document.createElement('div');
+            header.className = 'subject-header';
+            header.onclick = () => toggleTopic(topicIndex);
+
+            const progressSpan = document.createElement('span');
+            progressSpan.className = 'section-progress';
+            progressSpan.id = `progress-${topicIndex}`;
+            progressSpan.textContent = '0%';
+
+            const titleSpan = document.createElement('span');
+            titleSpan.textContent = '▶ ' + topic.title;
+
+            header.appendChild(titleSpan);
+            header.appendChild(progressSpan);
+            topicDiv.appendChild(header);
+
+            const itemsDiv = document.createElement('div');
+            itemsDiv.id = `items-${topicIndex}`;
+            itemsDiv.style.display = 'none';
+
+            topic.items.forEach((item, itemIndex) => {
+                const itemDiv = document.createElement('div');
+                const itemId = `${topicIndex}-${itemIndex}`;
+                itemDiv.className = 'item';
+                itemDiv.id = `item-${itemId}`;
+
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.id = `check-${itemId}`;
+                checkbox.onchange = () => {
+                    updateProgress();
+                    autoSaveState();
+                };
+
+                const label = document.createElement('label');
+                label.htmlFor = `check-${itemId}`;
+                label.style.marginLeft = '10px';
+                label.style.cursor = 'pointer';
+                label.textContent = item;
+
+                const itemName = document.createElement('div');
+                itemName.className = 'item-name';
+                itemName.appendChild(checkbox);
+                itemName.appendChild(label);
+
+                const percentInput = document.createElement('input');
+                percentInput.type = 'number';
+                percentInput.className = 'item-percentage';
+                percentInput.id = `pct-${itemId}`;
+                percentInput.min = '0';
+                percentInput.max = '100';
+                percentInput.value = '0';
+                percentInput.onchange = () => {
+                    let val = parseInt(percentInput.value) || 0;
+                    if (val < 0) val = 0;
+                    if (val > 100) val = 100;
+                    percentInput.value = val;
+                    updateProgress();
+                    updateFocusNeeded();
+                    autoSaveState();
+                };
+
+                const percentSpan = document.createElement('span');
+                percentSpan.style.fontSize = '0.9em';
+                percentSpan.style.color = '#999';
+                percentSpan.textContent = '%';
+
+                const notesBtn = document.createElement('button');
+                notesBtn.className = 'notes-btn';
+                notesBtn.id = `btn-${itemId}`;
+                notesBtn.textContent = '📝 Notes';
+                notesBtn.onclick = () => openNotes(itemId, item);
+
+                const controls = document.createElement('div');
+                controls.className = 'controls';
+                controls.appendChild(percentInput);
+                controls.appendChild(percentSpan);
+                controls.appendChild(notesBtn);
+
+                itemDiv.appendChild(itemName);
+                itemDiv.appendChild(controls);
+                itemsDiv.appendChild(itemDiv);
+            });
+
+            topicDiv.appendChild(itemsDiv);
+            content.appendChild(topicDiv);
+        });
+
+        updateProgress();
+    }
+
+    function toggleTopic(index) {
+        const itemsDiv = document.getElementById(`items-${index}`);
+        if (itemsDiv.style.display === 'none') {
+            itemsDiv.style.display = 'block';
+        } else {
+            itemsDiv.style.display = 'none';
+        }
+    }
+
+    function updateProgress() {
+        let totalItems = 0, completedItems = 0;
+
+        document.querySelectorAll('.item').forEach(item => {
+            const checkbox = item.querySelector('input[type="checkbox"]');
+            totalItems++;
+            if (checkbox.checked) completedItems++;
+        });
+
+        const overallPercent = totalItems > 0 ? Math.round((completedItems / totalItems) * 100) : 0;
+        document.getElementById('masteryPercent').textContent = overallPercent + '%';
+        
+        const gauge = document.getElementById('masteryGauge');
+        let color = 'linear-gradient(90deg, #ff4757, #ffa502)';
+        if (overallPercent <= 30) {
+            color = 'linear-gradient(90deg, #ff4757, #ffa502)';
+        } else if (overallPercent <= 50) {
+            color = 'linear-gradient(90deg, #ffa502, #ffd700)';
+        } else if (overallPercent <= 75) {
+            color = 'linear-gradient(90deg, #ffd700, #90EE90)';
+        } else {
+            color = 'linear-gradient(90deg, #90EE90, #228B22)';
+        }
+        gauge.style.background = color;
+        gauge.style.width = overallPercent + '%';
+
+        // Update section progress
+        userTopics.forEach((topic, topicIndex) => {
+            let sectionTotal = 0, sectionCompleted = 0;
+            document.querySelectorAll(`#topic-${topicIndex} .item`).forEach(item => {
+                const checkbox = item.querySelector('input[type="checkbox"]');
+                sectionTotal++;
+                if (checkbox.checked) sectionCompleted++;
+            });
+
+            const sectionPercent = sectionTotal > 0 ? Math.round((sectionCompleted / sectionTotal) * 100) : 0;
+            const progressEl = document.getElementById(`progress-${topicIndex}`);
+            progressEl.textContent = sectionPercent + '%';
+        });
+
+        updateFocusNeeded();
+    }
+
+    function updateFocusNeeded() {
+        const weakList = document.getElementById('weakList');
+        const focusEmpty = document.getElementById('focusEmpty');
+        weakList.innerHTML = '';
+
+        document.querySelectorAll('.item').forEach(item => {
+            const checkbox = item.querySelector('input[type="checkbox"]');
+            const percentInput = item.querySelector('.item-percentage');
+            const currentPercent = parseInt(percentInput.value) || 0;
+
+            if (currentPercent >= 1 && currentPercent <= 50) {
+                const text = item.querySelector('label').textContent;
+                const itemId = item.id.replace('item-', '');
+
+                const pinColor = checkbox.checked ? '🟢' : '🔴';
+
+                const li = document.createElement('li');
+                li.className = 'focus-item';
+                li.innerHTML = pinColor + ' ' + text + ` <span style="font-size:0.8em; opacity:0.7;">(${currentPercent}%)</span>`;
+                li.onclick = () => navigateToItem(itemId);
+                weakList.appendChild(li);
+            }
+        });
+
+        if (weakList.children.length === 0) {
+            focusEmpty.style.display = 'block';
+        } else {
+            focusEmpty.style.display = 'none';
+        }
+    }
+
+    function navigateToItem(itemId) {
+        const item = document.getElementById(`item-${itemId}`);
+        if (item) {
+            item.style.background = '#fffacd';
+            item.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            setTimeout(() => {
+                item.style.background = '';
+            }, 3000);
+        }
+    }
+
+    function openNotes(itemId, itemName) {
+        currentNoteId = itemId;
+        document.getElementById('noteTitleShort').textContent = itemName;
+        document.getElementById('noteTitleFull').textContent = itemName;
+        document.getElementById('noteText').value = noteData[itemId]?.content || '';
+        document.getElementById('notesPanel').classList.add('open');
+        document.getElementById('overlay').classList.add('active');
+    }
+
+    function closeNotes() {
+        document.getElementById('notesPanel').classList.remove('open');
+        document.getElementById('overlay').classList.remove('active');
+    }
+
+    function saveNote() {
+        const content = document.getElementById('noteText').value;
+        noteData[currentNoteId] = { content, lastSaved: new Date().toISOString() };
+        localStorage.setItem('noteData', JSON.stringify(noteData));
+        alert('Note saved!');
+    }
+
+    function toggleDashboard() {
+        document.getElementById('dashboard').classList.toggle('open');
+        document.getElementById('overlay').classList.toggle('active');
+    }
+
+    function closeAllPanels() {
+        document.getElementById('dashboard').classList.remove('open');
+        document.getElementById('notesPanel').classList.remove('open');
+        document.getElementById('overlay').classList.remove('active');
+    }
+
+    function autoSaveState() {
+        const state = {
+            timestamp: new Date().toISOString(),
+            checkboxes: {},
+            percentages: {},
+            topicExpanded: {}
+        };
+
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            if (checkbox.id.startsWith('check-')) {
+                state.checkboxes[checkbox.id] = checkbox.checked;
+            }
+        });
+
+        document.querySelectorAll('.item-percentage').forEach(input => {
+            state.percentages[input.id] = input.value;
+        });
+
+        // Save which topics are expanded
+        userTopics.forEach((topic, index) => {
+            const itemsDiv = document.getElementById(`items-${index}`);
+            if (itemsDiv) {
+                state.topicExpanded[index] = itemsDiv.style.display !== 'none';
+            }
+        });
+
+        localStorage.setItem('trackerState', JSON.stringify(state));
+        console.log('✓ Progress saved');
+    }
+
+    function restoreState() {
+        const savedState = localStorage.getItem('trackerState');
+        if (!savedState) return;
+
+        try {
+            const state = JSON.parse(savedState);
+
+            // Restore checkboxes
+            if (state.checkboxes) {
+                Object.keys(state.checkboxes).forEach(id => {
+                    const checkbox = document.getElementById(id);
+                    if (checkbox) checkbox.checked = state.checkboxes[id];
+                });
+            }
+
+            // Restore percentages
+            if (state.percentages) {
+                Object.keys(state.percentages).forEach(id => {
+                    const input = document.getElementById(id);
+                    if (input) input.value = state.percentages[id];
+                });
+            }
+
+            // Restore topic expansion state
+            if (state.topicExpanded) {
+                Object.keys(state.topicExpanded).forEach(index => {
+                    const itemsDiv = document.getElementById(`items-${index}`);
+                    if (itemsDiv) {
+                        itemsDiv.style.display = state.topicExpanded[index] ? 'block' : 'none';
+                    }
+                });
+            }
+
+            updateProgress();
+            updateFocusNeeded();
+            console.log('✓ Progress restored');
+        } catch (error) {
+            console.error('Error restoring state:', error);
+        }
+    }
+
+    function setupAutoSave() {
+        document.addEventListener('change', autoSaveState);
+        document.addEventListener('click', (e) => {
+            if (e.target.className === 'subject-header' || e.target.parentElement?.className === 'subject-header') {
+                setTimeout(autoSaveState, 100);
+            }
+        });
+        setInterval(autoSaveState, 5000);
+    }
+
+    function resetTracker() {
+        if (confirm('Are you sure? This will clear all data.')) {
+            localStorage.clear();
+            location.reload();
+        }
+    }
+
+    // Service Worker
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('./service-worker.js').catch(() => {});
+    }
+
+    // Check if setup is needed
+    if (!localStorage.getItem('courseName')) {
+        document.getElementById('setupScreen').style.display = 'flex';
+    } else {
+        document.getElementById('setupScreen').style.display = 'none';
+        userTopics = JSON.parse(localStorage.getItem('userTopics')) || [];
+        initializeTracker();
+    }
+</script>
+
+</body>
+</html>

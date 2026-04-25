@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MELE Tracker - Offline</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+      background: linear-gradient(135deg, #fff, #ffe4ec, #e6e6fa);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+    .offline-container {
+      text-align: center;
+      background: white;
+      padding: 40px;
+      border-radius: 15px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      max-width: 500px;
+    }
+    .offline-icon {
+      font-size: 80px;
+      margin-bottom: 20px;
+    }
+    h1 {
+      color: #333;
+      margin: 0 0 10px 0;
+      font-size: 2em;
+    }
+    p {
+      color: #666;
+      line-height: 1.6;
+      margin: 10px 0;
+    }
+    .status {
+      margin: 30px 0;
+      padding: 15px;
+      background: #fff3cd;
+      border-left: 4px solid #ffc107;
+      border-radius: 5px;
+      font-weight: 500;
+      color: #856404;
+    }
+    .retry-btn {
+      background: #06d6a0;
+      color: white;
+      border: none;
+      padding: 12px 30px;
+      border-radius: 8px;
+      font-size: 1em;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: all 0.3s;
+    }
+    .retry-btn:hover {
+      background: #05b385;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(6, 214, 160, 0.3);
+    }
+    .tips {
+      text-align: left;
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 20px;
+      font-size: 0.9em;
+    }
+    .tips h3 {
+      margin-top: 0;
+      color: #333;
+    }
+    .tips li {
+      margin: 8px 0;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <div class="offline-container">
+    <div class="offline-icon">📡</div>
+    <h1>You're Offline</h1>
+    <p>The MELE Tracker is in offline mode. Your data is saved locally on your device.</p>
+    
+    <div class="status">
+      ✓ Your progress and notes are safe and will sync when you're back online
+    </div>
+
+    <p>What you can do:</p>
+    <ul class="tips">
+      <li>✓ View your previously loaded content</li>
+      <li>✓ Check and update your progress locally</li>
+      <li>✓ Take and save notes</li>
+      <li>✓ All changes sync automatically when online</li>
+    </ul>
+
+    <button class="retry-btn" onclick="retryConnection()">🔄 Try to Reconnect</button>
+  </div>
+
+  <script>
+    function retryConnection() {
+      window.location.href = '/';
+    }
+
+    // Check connection every 2 seconds
+    setInterval(() => {
+      fetch('/ping', { method: 'HEAD', cache: 'no-store' })
+        .then(() => {
+          // Connected!
+          window.location.href = '/';
+        })
+        .catch(() => {
+          // Still offline
+        });
+    }, 2000);
+  </script>
+</body>
+</html>
