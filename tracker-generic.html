@@ -428,6 +428,22 @@
     .reset-btn:hover {
         opacity: 0.9;
     }
+    .edit-btn {
+    padding: 8px 12px;
+    background: #06d6a0;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85em;
+    margin-bottom: 10px;
+    width: 100%;
+    }
+
+    .edit-btn:hover {
+    opacity: 0.9;
+    background: #05b385;
+    }
 </style>
 </head>
 <body>
@@ -488,7 +504,8 @@
     </div>
 
     <div style="margin-top: auto; padding-bottom: 20px;">
-        <button class="reset-btn" onclick="resetTracker()">⚙️ Reset Tracker</button>
+    <button class="edit-btn" onclick="openEditModal()">✏️ Edit Tracker Setup</button>
+    <button class="reset-btn" onclick="resetTracker()">⚙️ Reset Tracker</button>
     </div>
 </div>
 
@@ -507,6 +524,116 @@
     <textarea id="noteText" placeholder="Add your study notes, formulas, or key points..."></textarea>
     <button onclick="saveNote()" style="padding: 20px; background: var(--primary); color: white; border: none; font-weight: bold; font-size: 1.1em; cursor: pointer;">💾 Save Note</button>
 </div>
+
+<!-- Edit Configuration Modal -->
+<div id="editModal" class="edit-modal" style="display: none;">
+    <div class="edit-modal-content">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2 style="margin: 0;">✏️ Edit Tracker Setup</h2>
+            <button onclick="closeEditModal()" style="background: none; border: none; font-size: 1.8em; cursor: pointer;">&times;</button>
+        </div>
+
+        <label>Course/Subject Name</label>
+        <input type="text" id="editCourseName" style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box;">
+
+        <label>Exam/Deadline Date</label>
+        <input type="date" id="editExamDate" style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box;">
+
+        <label>Study Topics & Subtopics</label>
+        <div id="editTopicsContainer" style="max-height: 400px; overflow-y: auto; margin-bottom: 15px;"></div>
+
+        <button onclick="addEditableTopic()" style="width: 100%; padding: 10px; background: #f0f0f0; border: 2px dashed #ddd; border-radius: 8px; cursor: pointer; margin-bottom: 15px;">+ Add New Topic</button>
+
+        <div style="display: flex; gap: 10px; margin-top: 10px;">
+            <button onclick="saveEditedConfig()" style="flex: 1; padding: 12px; background: #06d6a0; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">💾 Save Changes</button>
+            <button onclick="closeEditModal()" style="flex: 1; padding: 12px; background: #ccc; color: #333; border: none; border-radius: 8px; cursor: pointer;">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<style>
+    .edit-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.8);
+        z-index: 10000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .edit-modal-content {
+        background: white;
+        padding: 25px;
+        border-radius: 15px;
+        max-width: 600px;
+        width: 90%;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+    .editable-topic-card {
+        background: #f9f9f9;
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #eee;
+    }
+    .editable-topic-card input {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 10px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        box-sizing: border-box;
+    }
+    .subtopic-item {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 8px;
+        align-items: center;
+    }
+    .subtopic-item input {
+        flex: 1;
+        margin-bottom: 0;
+    }
+    .remove-subtopic {
+        background: #ff4757;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 6px 12px;
+        cursor: pointer;
+    }
+    .add-subtopic-btn {
+        background: none;
+        border: 1px dashed #06d6a0;
+        color: #06d6a0;
+        padding: 6px;
+        border-radius: 6px;
+        cursor: pointer;
+        margin-top: 8px;
+        width: 100%;
+    }
+    .remove-topic-btn {
+        background: #ff4757;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        padding: 8px;
+        cursor: pointer;
+        width: 100%;
+        margin-top: 10px;
+    }
+    
+    @media (max-width: 600px) {
+        .edit-modal-content {
+            width: 95%;
+            padding: 15px;
+        }
+    }
+</style>
 
 <script>
     // Quotes for motivation
@@ -919,7 +1046,208 @@
             location.reload();
         }
     }
+        // ========== EDIT TRACKER FUNCTIONS ==========
+    
+    function openEditModal() {
+        // Load current data into edit form
+        const currentCourse = localStorage.getItem('courseName') || '';
+        const currentExamDate = localStorage.getItem('examDate') || '';
+        const currentTopics = JSON.parse(localStorage.getItem('userTopics') || '[]');
+        
+        document.getElementById('editCourseName').value = currentCourse;
+        document.getElementById('editExamDate').value = currentExamDate;
+        
+        // Render editable topics
+        renderEditableTopics(currentTopics);
+        
+        document.getElementById('editModal').style.display = 'flex';
+        document.getElementById('overlay').classList.add('active');
+    }
+    
+    function closeEditModal() {
+        document.getElementById('editModal').style.display = 'none';
+        document.getElementById('overlay').classList.remove('active');
+    }
+    
+    function renderEditableTopics(topics) {
+        const container = document.getElementById('editTopicsContainer');
+        container.innerHTML = '';
+        
+        topics.forEach((topic, idx) => {
+            const topicDiv = document.createElement('div');
+            topicDiv.className = 'editable-topic-card';
+            topicDiv.dataset.index = idx;
+            
+            // Topic title input
+            const titleInput = document.createElement('input');
+            titleInput.type = 'text';
+            titleInput.value = topic.title;
+            titleInput.placeholder = 'Topic name (e.g., Mathematics)';
+            titleInput.style.fontWeight = 'bold';
+            titleInput.onchange = (e) => {
+                topics[idx].title = e.target.value;
+            };
+            
+            // Subtopics container
+            const subtopicsDiv = document.createElement('div');
+            subtopicsDiv.style.marginTop = '10px';
+            subtopicsDiv.style.marginBottom = '10px';
+            
+            function refreshSubtopics() {
+                subtopicsDiv.innerHTML = '';
+                topic.items.forEach((item, itemIdx) => {
+                    const subRow = document.createElement('div');
+                    subRow.className = 'subtopic-item';
+                    
+                    const subInput = document.createElement('input');
+                    subInput.type = 'text';
+                    subInput.value = item;
+                    subInput.placeholder = 'Subtopic name';
+                    subInput.onchange = (e) => {
+                        topics[idx].items[itemIdx] = e.target.value;
+                    };
+                    
+                    const removeBtn = document.createElement('button');
+                    removeBtn.textContent = '✕';
+                    removeBtn.className = 'remove-subtopic';
+                    removeBtn.onclick = () => {
+                        topics[idx].items.splice(itemIdx, 1);
+                        if (topics[idx].items.length === 0) {
+                            topics[idx].items = ['']; // Add empty placeholder
+                        }
+                        refreshSubtopics();
+                    };
+                    
+                    subRow.appendChild(subInput);
+                    subRow.appendChild(removeBtn);
+                    subtopicsDiv.appendChild(subRow);
+                });
+                
+                // Add subtopic button
+                const addBtn = document.createElement('button');
+                addBtn.textContent = '+ Add Subtopic';
+                addBtn.className = 'add-subtopic-btn';
+                addBtn.onclick = () => {
+                    topics[idx].items.push('');
+                    refreshSubtopics();
+                };
+                subtopicsDiv.appendChild(addBtn);
+            }
+            
+            refreshSubtopics();
+            
+            // Remove topic button
+            const removeTopicBtn = document.createElement('button');
+            removeTopicBtn.textContent = 'Remove Topic';
+            removeTopicBtn.className = 'remove-topic-btn';
+            removeTopicBtn.onclick = () => {
+                topics.splice(idx, 1);
+                if (topics.length === 0) {
+                    // Add default topic if none left
+                    topics.push({ title: 'New Topic', items: ['New Subtopic'] });
+                }
+                renderEditableTopics(topics);
+            };
+            
+            topicDiv.appendChild(titleInput);
+            topicDiv.appendChild(subtopicsDiv);
+            topicDiv.appendChild(removeTopicBtn);
+            container.appendChild(topicDiv);
+        });
+    }
+    
+    function addEditableTopic() {
+        const currentTopics = getCurrentEditableTopics();
+        currentTopics.push({
+            title: 'New Topic',
+            items: ['New Subtopic']
+        });
+        renderEditableTopics(currentTopics);
+    }
+    
+    function getCurrentEditableTopics() {
+        // Extract current topics from the DOM
+        const topics = [];
+        const topicCards = document.querySelectorAll('#editTopicsContainer .editable-topic-card');
+        
+        topicCards.forEach(card => {
+            const titleInput = card.querySelector('input[placeholder="Topic name (e.g., Mathematics)"]');
+            const subtopicInputs = card.querySelectorAll('.subtopic-item input');
+            const items = [];
+            subtopicInputs.forEach(input => {
+                if (input.value.trim()) {
+                    items.push(input.value.trim());
+                }
+            });
+            
+            if (titleInput && titleInput.value.trim() && items.length > 0) {
+                topics.push({
+                    title: titleInput.value.trim(),
+                    items: items
+                });
+            }
+        });
+        
+        return topics;
+    }
+    
+    function saveEditedConfig() {
+        const newCourseName = document.getElementById('editCourseName').value.trim();
+        const newExamDate = document.getElementById('editExamDate').value;
+        const newTopics = getCurrentEditableTopics();
+        
+        if (!newCourseName) {
+            alert('Please enter a course/subject name');
+            return;
+        }
+        
+        if (!newExamDate) {
+            alert('Please enter an exam/deadline date');
+            return;
+        }
+        
+        if (newTopics.length === 0) {
+            alert('Please add at least one topic with valid subtopics');
+            return;
+        }
+        
+        // Validate no empty topics or subtopics
+        for (let i = 0; i < newTopics.length; i++) {
+            if (!newTopics[i].title) {
+                alert(`Topic ${i+1} has no name. Please enter a topic name.`);
+                return;
+            }
+            if (newTopics[i].items.length === 0) {
+                alert(`Topic "${newTopics[i].title}" has no subtopics. Please add at least one.`);
+                return;
+            }
+        }
+        
+        // Confirm with user that progress will reset
+        const confirmMsg = `⚠️ IMPORTANT: Editing will reset ALL your checkboxes and percentages (progress).\n\nYour saved notes will be preserved.\n\nAre you sure you want to continue?`;
+        
+        if (!confirm(confirmMsg)) {
+            return;
+        }
+        
+        // Save to localStorage
+        localStorage.setItem('courseName', newCourseName);
+        localStorage.setItem('examDate', newExamDate);
+        localStorage.setItem('userTopics', JSON.stringify(newTopics));
+        
+        // Clear progress state (checkboxes, percentages, expanded topics)
+        localStorage.removeItem('trackerState');
+        
+        // Notes data is preserved automatically (no change)
+        
+        // Close modal
+        closeEditModal();
+        
+        // Reload the tracker with new data
+        location.reload();
+    }
 
+    // ========== END EDIT TRACKER FUNCTIONS ==========
     // Service Worker
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('./service-worker.js').catch(() => {});
